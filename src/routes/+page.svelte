@@ -3,6 +3,7 @@
   import { Label } from "$lib/components/ui/label";
   import * as Card from "$lib/components/ui/card/index.js";
   import CustomButton from "$lib/components/CustomButton.svelte";
+  import CustomSeparator from "$lib/components/CustomSeparator.svelte";
 
   import { ArrowRight, Plus } from "@lucide/svelte";
 
@@ -59,16 +60,7 @@
       Create new chat
     </CustomButton>
 
-    <div class="relative py-3">
-      <div class="absolute inset-0 flex items-center">
-        <span class="w-full border-t border-border"></span>
-      </div>
-      <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-card px-2 text-muted-foreground font-mono">
-          or continue with
-        </span>
-      </div>
-    </div>
+    <CustomSeparator label="Or continue with" />
 
     <div class="space-y-4">
       <div class="space-y-2">
