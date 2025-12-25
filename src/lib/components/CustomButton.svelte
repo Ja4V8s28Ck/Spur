@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
-  import type { Component, ComponentProps } from "svelte";
+  import { Button, type ButtonProps } from "$lib/components/ui/button";
+  import type { Component } from "svelte";
   import { LoaderCircle } from "@lucide/svelte";
 
-  type Props = ComponentProps<Button> & {
+  type Props = ButtonProps & {
     icon?: Component;
     loading?: boolean;
   };
@@ -13,7 +13,7 @@
     loading = false,
     disabled = false,
     children,
-    class: className = "",
+    class: className,
     ...restProps
   }: Props = $props();
 </script>
@@ -24,9 +24,9 @@
   {...restProps}
 >
   {@render children?.()}
-  {#if loading}
+  {#if Icon && loading}
     <LoaderCircle class="animate-spin" />
   {:else if Icon}
-    <Icon this={Icon} />
+    <Icon />
   {/if}
 </Button>
