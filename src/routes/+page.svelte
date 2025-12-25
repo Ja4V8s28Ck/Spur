@@ -6,6 +6,8 @@
   import CustomSeparator from "$lib/components/CustomSeparator.svelte";
 
   import { ArrowRight, Plus } from "@lucide/svelte";
+  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
 
   let isLoading = $state<boolean>(false);
   let errorMsg = $state<string>("");
@@ -17,6 +19,7 @@
     try {
       // create chat, on success redirect to chat page
       console.log("created chat");
+      await goto(resolve("/app"));
     } catch (err) {
       errorMsg = String(err);
       console.log(err);
@@ -30,7 +33,7 @@
     isLoading = true;
 
     try {
-      // verify the sessionId, on success redirect to chat page
+      // verify the conversationId, on success redirect to chat page
       console.log("going to chat");
     } catch (err) {
       errorMsg = String(err);
@@ -48,7 +51,7 @@
     </Card.Title>
 
     <Card.Description class="mb-1">
-      Create a new chat or enter chat session ID
+      Create a new chat or enter the chat conversation ID
     </Card.Description>
 
     <CustomButton
@@ -64,9 +67,9 @@
 
     <div class="space-y-4">
       <div class="space-y-2">
-        <Label for="sessionId">Session ID</Label>
+        <Label for="conversationId">Conversation ID</Label>
         <Input
-          id="sessionId"
+          id="conversationId"
           type="text"
           placeholder="019b507f-c521-701a-adb1-e7e9b805495d"
         />
