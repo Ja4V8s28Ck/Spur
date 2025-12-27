@@ -34,9 +34,14 @@
       use:enhance={() => {
         isCreateConversationLoading = true;
 
-        return async ({ update }) => {
+        return async ({ result, update }) => {
           await update();
           isCreateConversationLoading = false;
+
+          if (result.type === "success") {
+            const response = result.data as ConversationResponseSuccess;
+            goto(resolve(`/${response.conversationId}`));
+          }
         };
       }}
     >
