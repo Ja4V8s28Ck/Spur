@@ -6,6 +6,7 @@ import type {
 	ConversationResponseError,
 	ConversationResponseSuccess,
 } from "$lib/types";
+import { isValidUUID } from "$lib/utils";
 import { fail, type RequestEvent } from "@sveltejs/kit";
 
 export const actions = {
@@ -44,11 +45,7 @@ export const actions = {
 			} satisfies ConversationResponseError);
 		}
 
-		const regex =
-			/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
-		const isValid = regex.test(conversationId);
-
-		if (conversationId.length != 36 || !isValid) {
+		if (!isValidUUID(conversationId)) {
 			return fail(400, {
 				action: "getConversation",
 				error: "CONVERSATION_ID_INVALID",
