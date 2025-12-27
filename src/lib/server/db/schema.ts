@@ -13,7 +13,7 @@ export const chats = sqliteTable("chats", {
 	conversationId: text("conversation_id")
 		.notNull()
 		.references(() => conversations.id, { onDelete: "cascade" }),
-	message: text("message", { length: 256 }).notNull(),
+	message: text("message", { length: 1024 }).notNull(),
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
 		.$default(() => new Date()),
