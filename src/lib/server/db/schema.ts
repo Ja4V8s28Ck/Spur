@@ -10,6 +10,7 @@ export const chats = sqliteTable("chats", {
 	id: text("id")
 		.primaryKey()
 		.$default(() => crypto.randomUUID()),
+	isBot: integer("is_bot", { mode: "boolean" }).notNull().default(false),
 	conversationId: text("conversation_id")
 		.notNull()
 		.references(() => conversations.id, { onDelete: "cascade" }),
