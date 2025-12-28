@@ -46,7 +46,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: var(--color-lime-600);
+  --primary: var(--color-lime-700);
   --primary-foreground: var(--color-lime-50);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -115,11 +115,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
-.scrollbar::-webkit-scrollbar {
-  scrollbar-width: none
+.scrollbar {
+  scrollbar-color: var(--card-foreground) var(--card);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
