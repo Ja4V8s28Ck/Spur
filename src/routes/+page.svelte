@@ -5,7 +5,7 @@
   import CustomButton from "$lib/components/CustomButton.svelte";
   import CustomSeparator from "$lib/components/CustomSeparator.svelte";
 
-  import type { ConversationResponseSuccess } from "$lib/types";
+  import type { ResponseSuccess } from "$lib/types";
 
   import { ArrowRight, Plus } from "@lucide/svelte";
   import { enhance } from "$app/forms";
@@ -39,7 +39,7 @@
           isCreateConversationLoading = false;
 
           if (result.type === "success") {
-            const response = result.data as ConversationResponseSuccess;
+            const response = result.data as ResponseSuccess;
             goto(resolve(`/${response.conversationId}`));
           }
         };
@@ -81,7 +81,7 @@
           isGetConversationLoading = false;
 
           if (result.type === "success") {
-            const response = result.data as ConversationResponseSuccess;
+            const response = result.data as ResponseSuccess;
             goto(resolve(`/${response.conversationId}`));
           }
         };

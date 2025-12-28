@@ -2,10 +2,7 @@ import {
 	createConversation,
 	getConversationById,
 } from "$lib/server/conversations";
-import type {
-	ConversationResponseError,
-	ConversationResponseSuccess,
-} from "$lib/types";
+import type { ResponseError, ResponseSuccess } from "$lib/types";
 import { isValidUUID } from "$lib/utils";
 import { fail, type RequestEvent } from "@sveltejs/kit";
 
@@ -19,13 +16,13 @@ export const actions = {
 				action: "createConversation",
 				success: true,
 				conversationId,
-			} satisfies ConversationResponseSuccess;
+			} satisfies ResponseSuccess;
 		} catch (error) {
 			return fail(500, {
 				action: "createConversation",
 				error: "FAILED_TO_CREATE_CONVERSATION",
 				detail: error instanceof Error ? error.message : "Unknown error",
-			} satisfies ConversationResponseError);
+			} satisfies ResponseError);
 		}
 	},
 
@@ -42,7 +39,7 @@ export const actions = {
 				action: "getConversation",
 				error: "CONVERSATION_ID_REQUIRED",
 				detail: "Conversation ID not given",
-			} satisfies ConversationResponseError);
+			} satisfies ResponseError);
 		}
 
 		if (!isValidUUID(conversationId)) {
@@ -50,7 +47,7 @@ export const actions = {
 				action: "getConversation",
 				error: "CONVERSATION_ID_INVALID",
 				detail: "Conversation ID not valid",
-			} satisfies ConversationResponseError);
+			} satisfies ResponseError);
 		}
 
 		try {
@@ -61,19 +58,19 @@ export const actions = {
 					action: "getConversation",
 					error: "CONVERSATION_ID_NOT_FOUND",
 					detail: "Conversation id not found",
-				} satisfies ConversationResponseError);
+				} satisfies ResponseError);
 			}
 			return {
 				action: "getConversation",
 				success: true,
 				conversationId,
-			} satisfies ConversationResponseSuccess;
+			} satisfies ResponseSuccess;
 		} catch (error) {
 			return fail(500, {
 				action: "getConversation",
 				error: "FAILED_TO_GET_CONVERSATION",
 				detail: error instanceof Error ? error.message : "Unknown error",
-			} satisfies ConversationResponseError);
+			} satisfies ResponseError);
 		}
 	},
 };
