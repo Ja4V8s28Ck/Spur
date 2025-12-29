@@ -42,8 +42,8 @@
     }
   }
 
-  const maxInputLength = 200;
-  const totalMessageCount = 5;
+  const maxInputLength = Number(import.meta.env.VITE_MAX_MESSAGE_LENGTH || 200);
+  const totalMessageCount = Number(import.meta.env.VITE_MAX_MESSAGE_LIMIT || 5);
 
   let userMessageCount = $state<number>(0);
   let isMessageLimitReached = $state<boolean>(false);
