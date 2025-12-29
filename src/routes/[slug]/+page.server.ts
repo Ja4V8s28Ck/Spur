@@ -40,16 +40,6 @@ export const actions = {
 			} as ResponseError);
 		}
 
-		const conversation = await getConversationById(conversationId);
-
-		if (conversation?.messageLimit) {
-			return fail(403, {
-				action: "sendMessage",
-				error: "MESSAGE_LIMIT_REACHED",
-				detail: "Message limit reached, start a new conversation",
-			} as ResponseError);
-		}
-
 		const message = formData.get("message")?.toString().trim();
 
 		if (!message) {
@@ -57,6 +47,24 @@ export const actions = {
 				action: "sendMessage",
 				error: "MESSAGE_REQUIRED",
 				detail: "Message cannot be empty",
+			} as ResponseError);
+		}
+
+		if (message.length > Number(process.env.MAX_MESSAGE_LENGTH || 200)) {
+			return fail(400, {
+				action: "sendMessage",
+				error: "MESSAGE_TOO_LONG",
+				detail: "Message is too long",
+			} as ResponseError);
+		}
+
+		const conversation = await getConversationById(conversationId);
+
+		if (conversation?.messageLimit) {
+			return fail(403, {
+				action: "sendMessage",
+				error: "MESSAGE_LIMIT_REACHED",
+				detail: "Message limit reached, start a new conversation",
 			} as ResponseError);
 		}
 
