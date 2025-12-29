@@ -125,7 +125,7 @@
         <p
           class="px-3 py-2 rounded-lg bg-muted max-w-[70%] w-fit bg-muted text-red-500 flex flex-row items-center gap-x-2"
         >
-          Agent has failed to respond due to {errorResponse.detail}.
+          Agent has failed to respond due to the error: `{errorResponse.detail}`.
         </p>
       </div>
     {/if}
