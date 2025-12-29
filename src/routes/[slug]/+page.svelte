@@ -15,7 +15,7 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import Separator from "$lib/components/ui/separator/separator.svelte";
 
-  const maxInputLength = 200;
+  // Scrollbar
   let scrollContainer: HTMLDivElement;
   let showScrollButton = $state(false);
 
@@ -32,6 +32,7 @@
     }
   }
 
+  // Textbox enter to send
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -41,6 +42,11 @@
     }
   }
 
+  const maxInputLength = 200;
+  const totalMessageCount = 5;
+
+  let userMessageCount = $state<number>(0);
+  let isTokenLimit = $derived<boolean>(userMessageCount <= totalMessageCount);
   let isLoading = $state<boolean>(false);
   let errorResponse = $state<ResponseError>();
   let currentMessage = $state<string>("");
@@ -49,6 +55,9 @@
 
   $effect(() => {
     messages = data.messages || [];
+    userMessageCount = data.messages.filter(
+      (chat) => chat.isBot == false,
+    ).length;
     scrollToBottom();
   });
 </script>
@@ -175,7 +184,7 @@
           name="message"
           placeholder="Ask your query..."
           bind:value={currentMessage}
-          disabled={isLoading}
+          disabled={isLoading || isTokenLimit}
           maxlength={maxInputLength}
           onkeydown={handleKeydown}
           required
@@ -184,12 +193,16 @@
           <InputGroup.Text class="text-muted-foreground text-xs">
             {maxInputLength - currentMessage.trim().length} characters left
           </InputGroup.Text>
+          <InputGroup.Text class="ms-auto">
+            {totalMessageCount - userMessageCount} message left
+          </InputGroup.Text>
+          <Separator orientation="vertical" class="!h-7" />
           <InputGroup.Button
             type="submit"
             variant="default"
-            class="rounded-full ms-auto cursor-pointer"
+            class="rounded-full cursor-pointer"
             size="icon-sm"
-            disabled={!currentMessage.trim() || isLoading}
+            disabled={!currentMessage.trim() || isLoading || isTokenLimit}
           >
             {#if isLoading}
               <Loader class="animate-spin" />
