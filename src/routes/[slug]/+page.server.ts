@@ -12,16 +12,17 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(400, "Conversation ID invalid");
 	}
 
-	const isConversationExist = await getConversationById(conversationId);
-
-	if (!isConversationExist) {
+	const conversation = await getConversationById(conversationId);
+	if (!conversation) {
 		throw error(404, "Conversation not found");
 	}
 
-	const messages: Chat[] = await getAllMessages(conversationId);
+	const messages: Chat[] = await getAllMessages(conversation.id);
 
 	return {
 		messages,
+		messagesCount: conversation.messageCount,
+		messageLimit: conversation.messageLimit,
 	};
 };
 
@@ -36,6 +37,16 @@ export const actions = {
 				action: "sendMessage",
 				error: "CONVERSATION_ID_REQUIRED",
 				detail: "Conversation ID not given",
+			} as ResponseError);
+		}
+
+		const conversation = await getConversationById(conversationId);
+
+		if (conversation?.messageLimit) {
+			return fail(403, {
+				action: "sendMessage",
+				error: "MESSAGE_LIMIT_REACHED",
+				detail: "Message limit reached, start a new conversation",
 			} as ResponseError);
 		}
 

@@ -4,6 +4,8 @@ export const conversations = sqliteTable("conversations", {
 	id: text("id")
 		.primaryKey()
 		.$default(() => crypto.randomUUID()),
+	messageCount: integer("messageCount").notNull().default(0),
+	messageLimit: integer("limitReached", { mode: "boolean" }).default(false),
 });
 
 export const chats = sqliteTable("chats", {

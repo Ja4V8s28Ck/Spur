@@ -46,7 +46,7 @@
   const totalMessageCount = 5;
 
   let userMessageCount = $state<number>(0);
-  let isTokenLimit = $derived<boolean>(userMessageCount <= totalMessageCount);
+  let isMessageLimitReached = $state<boolean>(false);
   let isLoading = $state<boolean>(false);
   let errorResponse = $state<ResponseError>();
   let currentMessage = $state<string>("");
@@ -55,9 +55,8 @@
 
   $effect(() => {
     messages = data.messages || [];
-    userMessageCount = data.messages.filter(
-      (chat) => chat.isBot == false,
-    ).length;
+    isMessageLimitReached = data.messageLimit || false;
+    userMessageCount = data.messagesCount || 0;
     scrollToBottom();
   });
 </script>
@@ -154,11 +153,13 @@
         isLoading = true;
 
         currentMessage = currentMessage.trim();
-        messages.push({
-          id: `temp-${Date.now()}`,
-          message: currentMessage,
-          isBot: false,
-        });
+        if (currentMessage) {
+          messages.push({
+            id: `temp-${Date.now()}`,
+            message: currentMessage,
+            isBot: false,
+          });
+        }
 
         currentMessage = "";
 
@@ -184,25 +185,41 @@
           name="message"
           placeholder="Ask your query..."
           bind:value={currentMessage}
-          disabled={isLoading || isTokenLimit}
+          disabled={isLoading || isMessageLimitReached}
           maxlength={maxInputLength}
           onkeydown={handleKeydown}
           required
         />
         <InputGroup.Addon align="block-end">
-          <InputGroup.Text class="text-muted-foreground text-xs">
-            {maxInputLength - currentMessage.trim().length} characters left
+          <InputGroup.Text
+            class={cn(
+              "text-xs",
+              maxInputLength === currentMessage.trim().length
+                ? "text-red-500"
+                : "text-muted-foreground",
+            )}
+          >
+            {maxInputLength - currentMessage.trim().length} character(s) left
           </InputGroup.Text>
-          <InputGroup.Text class="ms-auto">
-            {totalMessageCount - userMessageCount} message left
+          <InputGroup.Text
+            class={cn(
+              "text-xs ms-auto",
+              isMessageLimitReached ? "text-red-500" : "text-lime-600",
+            )}
+          >
+            <p>
+              {totalMessageCount - userMessageCount} message(s) left
+            </p>
           </InputGroup.Text>
-          <Separator orientation="vertical" class="!h-7" />
+          <Separator orientation="vertical" class="!h-5" />
           <InputGroup.Button
             type="submit"
             variant="default"
             class="rounded-full cursor-pointer"
             size="icon-sm"
-            disabled={!currentMessage.trim() || isLoading || isTokenLimit}
+            disabled={!currentMessage.trim() ||
+              isLoading ||
+              isMessageLimitReached}
           >
             {#if isLoading}
               <Loader class="animate-spin" />
