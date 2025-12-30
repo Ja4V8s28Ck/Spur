@@ -20,6 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const messages: Chat[] = await getAllMessages(conversation.id);
 
 	return {
+		conversationId,
 		messages,
 		messagesCount: conversation.messageCount,
 		messageLimit: conversation.messageLimit,

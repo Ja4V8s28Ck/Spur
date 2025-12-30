@@ -3,10 +3,17 @@
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
-  import { ArrowDown, ArrowUp, Loader, Undo2 } from "@lucide/svelte";
+  import {
+    ArrowDown,
+    ArrowUp,
+    Check,
+    Copy,
+    Loader,
+    Undo2,
+  } from "@lucide/svelte";
 
   import type { Chat, ResponseError } from "$lib/types";
-  import { cn } from "$lib/utils";
+  import { cn, copyToClipboard } from "$lib/utils";
 
   import CustomButton from "$lib/components/CustomButton.svelte";
   import * as Avatar from "$lib/components/ui/avatar/index.js";
@@ -39,6 +46,18 @@
 
       const form = (e.currentTarget as HTMLElement).closest("form");
       form?.requestSubmit();
+    }
+  }
+
+  let isCopied = $state<boolean>(false);
+  async function copyText(text: string) {
+    const copied = await copyToClipboard(text);
+
+    if (copied) {
+      isCopied = true;
+      setTimeout(() => {
+        isCopied = false;
+      }, 2000);
     }
   }
 
@@ -77,14 +96,22 @@
         <span class="text-md"> Shopping Bot </span>
         <p class="text-muted-foreground text-xs">bot@shopping.com</p>
       </div>
-      <CustomButton
-        class="ml-auto"
-        variant="outline"
-        onclick={() => goto(resolve("/"))}
-        icon={Undo2}
-      >
-        Back
-      </CustomButton>
+      <div class="flex md:flex-row flex-col gap-2 ms-auto">
+        <CustomButton
+          variant="outline"
+          onclick={() => copyText(data.conversationId)}
+          icon={isCopied ? Check : Copy}
+        >
+          ID
+        </CustomButton>
+        <CustomButton
+          variant="outline"
+          onclick={() => goto(resolve("/"))}
+          icon={Undo2}
+        >
+          Back
+        </CustomButton>
+      </div>
     </Card.Title>
   </Card.Header>
 
