@@ -15,3 +15,10 @@ export type Chat = {
 	message: string;
 	isBot: boolean;
 };
+
+export type AgentResponse = {
+	botReply?: string;
+	status: number;
+	error: string;
+	detail: string;
+};
