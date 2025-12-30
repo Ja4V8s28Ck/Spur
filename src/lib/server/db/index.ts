@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/bun-sqlite";
 import { Database } from "bun:sqlite";
-import { env, exit } from "process";
+import { exit } from "process";
 import * as schema from "./schema";
 
-const databaseURL = env.DATABASE_URL;
+const databaseURL = import.meta.env.VITE_DATABASE_URL;
 if (!databaseURL) {
 	console.error("DATABASE_URL env is not given");
 	exit(1);

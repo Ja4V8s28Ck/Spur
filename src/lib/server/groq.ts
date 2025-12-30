@@ -3,14 +3,14 @@ import Groq from "groq-sdk";
 import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat.mjs";
 import { exit } from "process";
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 if (!GROQ_API_KEY) {
   console.error("GROQ_API_KEY env not given");
   exit(1);
 }
 
 const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: GROQ_API_KEY,
 });
 
 const XdjQRpfBOwPIRZrlvU = `

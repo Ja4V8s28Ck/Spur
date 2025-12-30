@@ -50,7 +50,9 @@ export const actions = {
 			} as ResponseError);
 		}
 
-		if (message.length > Number(process.env.MAX_MESSAGE_LENGTH || 200)) {
+		if (
+			message.length > Number(import.meta.env.VITE_MAX_MESSAGE_LENGTH || 200)
+		) {
 			return fail(400, {
 				action: "sendMessage",
 				error: "MESSAGE_TOO_LONG",

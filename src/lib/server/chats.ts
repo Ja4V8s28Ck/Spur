@@ -28,7 +28,7 @@ export async function createMessage(conversationId: string, message: string) {
 			.update(conversations)
 			.set({
 				messageCount: sql`${conversations.messageCount} + 1`,
-				messageLimit: sql`${conversations.messageCount} >= ${process.env.MAX_MESSAGE_LIMIT || 5} - 1`,
+				messageLimit: sql`${conversations.messageCount} >= ${import.meta.env.VITE_MAX_MESSAGE_LIMIT || 5} - 1`,
 			})
 			.where(eq(conversations.id, conversationId));
 
