@@ -21,3 +21,13 @@ export function isValidUUID(uuid: string) {
 	const isValid = uuid.length == 36 || regex.test(uuid);
 	return isValid;
 }
+
+export async function copyToClipboard(text: string): Promise<boolean> {
+	try {
+		await navigator.clipboard.writeText(text);
+		return true;
+	} catch (error) {
+		console.error("Copy failed :", error);
+		return false;
+	}
+}
