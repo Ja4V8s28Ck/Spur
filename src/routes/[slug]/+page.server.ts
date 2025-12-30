@@ -23,6 +23,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		messages,
 		messagesCount: conversation.messageCount,
 		messageLimit: conversation.messageLimit,
+		maxMessageLength: import.meta.env.VITE_MAX_MESSAGE_LENGTH,
+		maxMessageLimit: import.meta.env.VITE_MAX_MESSAGE_LIMIT,
 	};
 };
 
