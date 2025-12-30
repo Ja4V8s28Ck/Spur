@@ -78,7 +78,8 @@ export const actions = {
 			return fail(500, {
 				action: "sendMessage",
 				error: "FAILED_TO_SEND_MESSAGE",
-				detail: error instanceof Error ? error.message : "Unknown error",
+				// @ts-expect-error no error type
+				detail: error?.message || error?.body?.message || "Unknown error",
 			} as ResponseError);
 		}
 	},
