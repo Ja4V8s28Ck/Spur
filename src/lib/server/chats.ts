@@ -1,8 +1,22 @@
 import { db } from "$lib/server/db";
 import { chats, conversations } from "$lib/server/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
+import { generateAgentReply } from "./groq";
+import { error } from "@sveltejs/kit";
+import type { AgentResponse } from "$lib/types";
 
 export async function createMessage(conversationId: string, message: string) {
+	const prevMessages = await getAllMessages(conversationId, false, 6);
+	const response: AgentResponse = await generateAgentReply(
+		prevMessages,
+		message,
+	);
+	if (!response?.botReply) {
+		throw error(response.status, {
+			message: response.detail,
+		});
+	}
+
 	await db.transaction(async (trx) => {
 		await trx.insert(chats).values({
 			conversationId,
@@ -18,16 +32,20 @@ export async function createMessage(conversationId: string, message: string) {
 			})
 			.where(eq(conversations.id, conversationId));
 
-		// TODO: Get LLM reply and add it to the conversation
 		await trx.insert(chats).values({
-			conversationId,
-			message: "This is a bot message_" + Date.now().toString(),
+			conversationId: conversationId,
+			message: response.botReply as string,
 			isBot: true,
 		});
 	});
 }
 
-export async function getAllMessages(conversationId: string) {
+export async function getAllMessages(
+	conversationId: string,
+	isAsc: boolean = true,
+	limit: number = -1,
+) {
+	const order = isAsc ? asc : desc;
 	return await db
 		.select({
 			id: chats.id,
@@ -36,5 +54,6 @@ export async function getAllMessages(conversationId: string) {
 		})
 		.from(chats)
 		.where(eq(chats.conversationId, conversationId))
-		.orderBy(chats.createdAt);
+		.orderBy(order(chats.createdAt))
+		.limit(limit);
 }
