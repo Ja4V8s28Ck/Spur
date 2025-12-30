@@ -42,8 +42,8 @@
     }
   }
 
-  const maxInputLength = Number(import.meta.env.VITE_MAX_MESSAGE_LENGTH || 200);
-  const totalMessageCount = Number(import.meta.env.VITE_MAX_MESSAGE_LIMIT || 5);
+  let maxInputLength = $state<number>(200);
+  let maxMessageLimit = $state<number>(5);
 
   let userMessageCount = $state<number>(0);
   let isMessageLimitReached = $state<boolean>(false);
@@ -57,6 +57,8 @@
     messages = data.messages || [];
     isMessageLimitReached = data.messageLimit || false;
     userMessageCount = data.messagesCount || 0;
+    maxInputLength = Number(data.maxMessageLength);
+    maxMessageLimit = Number(data.maxMessageLimit);
     scrollToBottom();
   });
 </script>
@@ -208,7 +210,7 @@
             )}
           >
             <p>
-              {totalMessageCount - userMessageCount} message(s) left
+              {maxMessageLimit - userMessageCount} message(s) left
             </p>
           </InputGroup.Text>
           <Separator orientation="vertical" class="!h-5" />
