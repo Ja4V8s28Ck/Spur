@@ -13,11 +13,28 @@ Bun has a faster build and runtime and it has a built-in SQLite DB faster than _
 
 ### Design
 ```mermaid
-graph LR
-	a(SvelteKit)
-	a <-- File DB --> b(Bun SQLite)
-	a <-- Generate Response --> c(Groq LLM) 
+flowchart TB
+    A(["Home page"]) --> B{"If user already has a converstation"}
+    B -- No --> C["Create new conversation"]
+    B -- Yes --> D["Get the existing conversation"]
+    D --> n1["Check if conversation ID exists"]
+    n1 -- Yes --> n2["Redirect to conversation page"]
+    n1 -- No --> n3["Throw 404 error"]
+    C -- On success --> n2
+    n4(["Conversation page"]) -- User sends query to agent --> n5["Send query to agent"]
+    n5 -- On error --> n6["Throw error"]
+    n5 -- On success --> n7["Groq responds"]
+    n7 --> n8["Update conversation page"]
+    n8 -- Repeats until message limit --> n4
+
+    n1@{ shape: diam}
+    n5@{ shape: rounded}
 ```
+
+### Database Schema
+<img width="1368" height="540" alt="image" src="https://github.com/user-attachments/assets/107b932a-9fd3-4f83-a03c-cff571b082ff" />
+
+
 
 ### What could I have done better?
 An interesting case, when the agent starts generating text and the user reloads the page while _Agent is typing_ message, it vanishes and after a couple of reloads we can see the generated response. I believe this could be solvable with redis (_not sure as I haven't tried it yet_), but adding redis means we should have a redis server up and running and time is of the essence. So I tried the same thing in **ChatGPT** and tried how it responds. Weirdly, it responds the same as the my project.
